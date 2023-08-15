@@ -75,3 +75,8 @@ local Player = Goop.Class({
 })
 local newPlayer = Player({name = "Timmy"}) ---ERROR: missing parameter 'health'
 ```
+
+# Help
+If you run into any issues feel free to get in touch with me on discord: @callgage  
+
+Feel free to use this in any capacity.
