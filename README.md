@@ -44,3 +44,34 @@ Rectangle({dimensions = 5}) ---ERROR: dimensions is wrong type. Expected 'table'
 Rectangle({dimensions = {width = 50, height = 50})
 ```
 
+## `Goop.Class`
+The `Goop.Class` function takes one table as an argument with four optional values:
+* `static`
+* `dynamic`
+* `parameters`
+* `extends`
+
+`static` and `dynamic` represent the state of the class. `dynamic` values will have brand new references created whenever the class is instantiated - While `static` values will always refer to the class definitions value.
+
+`parameters` refers to a table of values you can pass to the class upon instantiation. When setting `parameters` in a class definition, it expects an array of tables describing the key and type of any parameters you want to be *necessary* when creating the class.  
+Not providing these parameters, or providing one with the wrong type will result in an error.
+
+```Lua
+local Character = Goop.Class({
+  parameters = {
+    {"health", "number"},
+    {"name", "string"}
+  }
+})
+
+local newCharacter = Player({health = 1, name = "John"})
+```
+  
+`extends` defines a class you want to "extend" from, or inherit from. Any required parameters from that class will also be required to instantiate the subclass you are defining.
+
+```Lua
+local Player = Goop.Class({
+  extends = Character
+})
+local newPlayer = Player({name = "Timmy"}) ---ERROR: missing parameter 'health'
+```
