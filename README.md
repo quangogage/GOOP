@@ -22,6 +22,10 @@ local Shape = Goop.Class({
   }
 })
 ```
+We can instantiate this class by calling it's name as a function:
+```Lua
+local myNewShape = Shape()
+```
 
 Next lets extend from this class and make a rectangle sub-class.
 ```Lua
