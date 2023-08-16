@@ -1,11 +1,46 @@
--- Get the current script's directory
-local currentDir = debug.getinfo(1, "S").source:sub(2):match("(.*/)")
--- Modify package.path to include the current directory
-package.path = package.path .. ";" .. currentDir .. "?.lua"
 
-local util = require("util.util")({"table"})
+--- ** UTIL/TABLE.LUA ** --
+---Various table manipulation functions.
+local util = {}
+util.table = {}
+function util.table.copy(new, original)
+    for key,value in pairs(original) do
+        new[key] = value
+    end
+end
+function util.table.deepCopy(new, original)
+    if type(original) == "table" then
+        local mt = getmetatable(original)
+        setmetatable(new, mt)
+    end
+    for key,value in pairs(original) do
+        if type(value) == "table" then
+            new[key] = {}
+            tbl.deepCopy(new[key], value)
+        else
+            new[key] = value
+        end
+    end
+end
+function util.table.createDeepCopy(original)
+    local newCopy = {}
+    if type(original) == "table" then
+        local mt = getmetatable(original)
+        setmetatable(newCopy, mt)
+    end
+    for key,value in pairs(original) do
+        if type(value) == "table" then
+            newCopy[key] = tbl.createDeepCopy(value)
+        else
+            newCopy[key] = value
+        end
+    end
+    return newCopy
+end
+
+
+--- ** GOOP.LUA ** ---
 local Goop = {}
-
 ---Check that all required parameters are present
 ---@param params table
 ---@param requiredParams table
