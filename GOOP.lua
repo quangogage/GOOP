@@ -141,8 +141,10 @@ function Goop.Class(data)
             else
                 ---Create new references of the dynamic state values.
                 newInstance = util.table.createDeepCopy(state.dynamic)
+                if passedState then
+                    util.table.copy(newInstance, passedState)
+                end
             end
-            util.table.copy(newInstance, passedState)
 
         
             setmetatable(newInstance, {__index = newClassDefinition})
