@@ -113,6 +113,9 @@ parameters = {
 local bobOne = Bob({age = 26, height = "170cm", weight = "60kg") -- ERROR: Invalid parameter type "height". Expected "number", received "string". 
 ```
 
+# Contribution
+As of writing this, this is some of the ugliest code I've ever shared with anyone. But if you would still like to contribute feel free to make a pull request :^).
+  
 # Help
 If you run into any issues feel free to get in touch with me on discord: @callgage  
 
