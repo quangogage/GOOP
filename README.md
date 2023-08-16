@@ -1,6 +1,6 @@
 # GOOP
 ###### Gage's Object Oriented Programming
-An OOP library for lua that enables all of the oop features you'd want - Along with type checked parameters for instantiation.
+An OOP library for lua that enables all of the oop features you'd want - Along with optional type checked arguments for instantiation.
 
 ## Install
 Place the `/GOOP` anywhere you'd like in your directory and require it.
@@ -10,70 +10,107 @@ local Goop = require("libs.GOOP")
 
 ## Quick Start
 Goop's only function is to define a class.  
-For this example lets make a `Shape` class that has a color and position. 
+For this example lets make a `Person` class.
+
 ```Lua
-local Goop = require("libs.GOOP")
-local Shape = Goop.Class({
-  static = {
-    color = {1,1,1}
-  },
+local Person = Goop.Class({
+    static = {
+        species = "Homo sapiens"
+    },
+    dynamic = {
+        name = "",
+        age = 0
+    },
+    arguments = { "name", "age" }
+})
+
+local bob = Person("Bob") -- Missing arguments!
+local bob = Person("Bob", 26) -- All good.
+```
+
+In order to inherit from this class, all we have to do is define the `extends` value.
+
+```Lua
+local Bob = Goop.Class({
+  extends = Person,
   dynamic = {
-    position = {x = 50, y = 50}
+    occupation = "construction",
+    name = "Bob",
+    age = 26
   }
 })
 ```
-We can instantiate this class by calling it's name as a function:
-```Lua
-local myNewShape = Shape()
-```
 
-Next lets extend from this class and make a rectangle sub-class.
+## Type-Checking
+Type checking arguments can be done easily, and at an individual level. All you have to do is define the argument as a table containing two strings - One for the string key, and one for the expected type.
 ```Lua
-local Rectangle = Goop.Class({
-  extends = Shape,
-  parameters = {
-    {"dimensions", "table"}
+local Bob = Goop.Class({
+  extends = Person,
+  dynamic = {
+    occupation = "construction",
+    name = "Bob",
+    age = 26
+  },
+  arguments = {
+    {"age", "number"}, -- MUST be a number
+    {"height", "number"}, -- MUST be a number
+    "weight" -- Will not be type checked.
   }
 })
-```
-Here we've specified that we want our new `Rectangle` class to inherit from, or extend the `Shape` class.  
-And, that when instantiated, we must provide a `dimensions` paremeter with the type `table`.
-```Lua
-Rectangle() ---ERROR: Missing parameter dimensions
-Rectangle({dimensions = 5}) ---ERROR: dimensions is wrong type. Expected 'table'. Received 'number'.
-Rectangle({dimensions = {width = 50, height = 50})
+
+local bobOne = Bob(26, "170cm", "60kg") -- Invalid type arg #2 - Expected number. Received string.
+local bobTwo = Bob(26, 170, "60kg") -- All good
+local bobTwo = Bob(26, 170, 60) -- Also good.
 ```
 
-## `Goop.Class`
-The `Goop.Class` function takes one table as an argument with four optional values:
-* `static`
-* `dynamic`
-* `parameters`
+## Advanced class configuration
+The `Goop.Class` function has 5 optional values.
 * `extends`
+* `dynamic`
+* `static`
+* `arguments`
+* `parameters`
 
-`static` and `dynamic` represent the state of the class. `dynamic` values will have brand new references created whenever the class is instantiated - While `static` values will always refer to the class definitions value.
+### `dynamic` and `static`
+These refer to the state of the class. `dynamic` values will be deep copied to new instances of the class when created, while `static` values will only be shallow copied once upon definition of the class.  
+This allows for better optimization - Less tables will be created over-all whenever you instantiate a new class.  
+###### If optimization isn't an issue, feel free to just use dynamic!
 
-`parameters` refers to a table of values you can pass to the class upon instantiation. When setting `parameters` in a class definition, it expects an array of tables describing the key and type of any parameters you want to be *necessary* when creating the class.  
-Not providing these parameters, or providing one with the wrong type will result in an error.
+## Parameters
+This is a pretty niche feature of GOOP, and if you don't want to add any more confusion from something that most likely won't be relevant to you: I suggest you stop reading and get to goopin™.  
+  
+Parameters are an alternative to arguments. Rather than providing list of arguments when instantiating a class - You provide one: a table, with key-pair values representing the state of the instance.  
+This allows for two things: More explicit argument definitions, and the ability to easily add custom state to the class within the instantiation function.
 
 ```Lua
-local Character = Goop.Class({
+local Bob = Goop.Class({
+  extends = Person,
+  dynamic = {
+    occupation = "construction",
+    name = "Bob",
+    age = 26
+  },
+
+  -- Defining parameters
   parameters = {
-    {"health", "number"},
-    {"name", "string"}
+    "age",
+    "height",
+    "weight"
   }
 })
 
-local newCharacter = Player({health = 1, name = "John"})
+local bobOne = Bob({age = 26, height = "170cm", weight = "60kg", eyeColor = "blue", hairColor = "black"})
 ```
-  
-`extends` defines a class you want to "extend" from, or inherit from. Any required parameters from that class will also be required to instantiate the subclass you are defining.
+
+You are also able to type-check parameters the same way you would arguments.
 
 ```Lua
-local Player = Goop.Class({
-  extends = Character
+parameters = {
+  {"age", "number"}, -- MUST be a number
+  {"height", "number"}, -- MUST be a number
+  "weight" -- Will not be type checked.
 })
-local newPlayer = Player({name = "Timmy"}) ---ERROR: missing parameter 'health'
+local bobOne = Bob({age = 26, height = "170cm", weight = "60kg") -- ERROR: Invalid parameter type "height". Expected "number", received "string". 
 ```
 
 # Help
