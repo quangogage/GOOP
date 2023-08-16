@@ -110,7 +110,7 @@ parameters = {
   {"height", "number"}, -- MUST be a number
   "weight" -- Will not be type checked.
 })
-local bobOne = Bob({age = 26, height = "170cm", weight = "60kg") -- ERROR: Invalid parameter type "height". Expected "number", received "string". 
+local bobOne = Bob({age = 26, height = "170cm", weight = "60kg"}) -- ERROR: Invalid parameter type "height". Expected "number", received "string". 
 ```
 
 # Contribution
