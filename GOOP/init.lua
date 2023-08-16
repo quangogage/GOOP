@@ -48,6 +48,7 @@ function Goop.Class(data)
             local newInstance
             if data.extends then
                 newInstance = data.extends(params)
+                util.table.deepCopy(newInstance,state.dynamic)
             else
                 newInstance = util.table.createDeepCopy(state.dynamic)
             end
@@ -59,6 +60,7 @@ function Goop.Class(data)
     if data.extends then
         mt.__index = data.extends
     end
+
     setmetatable(newClassDefinition, mt)
     return newClassDefinition
 end
