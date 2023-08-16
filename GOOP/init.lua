@@ -49,6 +49,7 @@ function Goop.Class(data)
             if data.extends then
                 newInstance = data.extends(params)
                 util.table.deepCopy(newInstance,state.dynamic)
+                util.table.copy(newInstance,state.static)
             else
                 newInstance = util.table.createDeepCopy(state.dynamic)
             end
