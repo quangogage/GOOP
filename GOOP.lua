@@ -16,7 +16,7 @@ function util.table.deepCopy(new, original)
     for key,value in pairs(original) do
         if type(value) == "table" then
             new[key] = {}
-            tbl.deepCopy(new[key], value)
+            util.table.deepCopy(new[key], value)
         else
             new[key] = value
         end
@@ -30,7 +30,7 @@ function util.table.createDeepCopy(original)
     end
     for key,value in pairs(original) do
         if type(value) == "table" then
-            newCopy[key] = tbl.createDeepCopy(value)
+            newCopy[key] = util.table.createDeepCopy(value)
         else
             newCopy[key] = value
         end
