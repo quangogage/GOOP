@@ -148,6 +148,9 @@ function Goop.Class(data)
             end
 
             setmetatable(newInstance, {__index = newClassDefinition})
+            if newInstance.init then
+                newInstance:init(...)
+            end
             return newInstance
         end
     }
