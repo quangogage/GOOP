@@ -62,6 +62,34 @@ local bobOne = Bob(26, "170cm", "60kg") -- Invalid type arg #2 - Expected number
 local bobTwo = Bob(26, 170, "60kg") -- All good
 local bobTwo = Bob(26, 170, 60) -- Also good.
 ```
+## `init()`
+After all other instantiation logic, a new class instance will check if it has an `init` function defined, if so - It will call it and pass in any arguments it was passed when instantiated.
+```Lua
+local Bob = Goop.Class({
+  extends = Person,
+  dynamic = {
+    occupation = "construction",
+    name = "Bob",
+    age = 26
+  },
+  arguments = {
+    {"age", "number"}, -- MUST be a number
+    {"height", "number"}, -- MUST be a number
+    "weight" -- Will not be type checked.
+  }
+})
+
+function Bob:init(...)
+    local args = {...}
+    print(args[1]) -- 50
+    print(args[2]) -- 170
+    ...
+    print(args[4]) -- "some extra argument"
+end
+
+local bobOne = Bob(50,170,"60kg","some extra argument")
+```
+
 
 ## Advanced class configuration
 The `Goop.Class` function has 5 optional values.
