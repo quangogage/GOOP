@@ -97,12 +97,10 @@ function Goop.Class(data)
 
             ---Parameters
             if data.parameters then
-                local parameters = ...
+                passedState = select(1, ...)
                 assert(... ~= nil, "GOOP: Class insantiated without required parameters")
                 assert(type(...) == "table", "GOOP: Class expected parameters (table), received: " .. type(...))
-                checkParameters(..., data.parameters)
-                passedState = ...
-
+                checkParameters(passedState, data.parameters)
             ---Arguments
             elseif data.arguments then
                 local args = {...}
@@ -141,12 +139,11 @@ function Goop.Class(data)
             else
                 ---Create new references of the dynamic state values.
                 newInstance = util.table.createDeepCopy(state.dynamic)
-                if passedState then
-                    util.table.copy(newInstance, passedState)
-                end
+            end
+            if passedState then
+                util.table.copy(newInstance, passedState)
             end
 
-        
             setmetatable(newInstance, {__index = newClassDefinition})
             return newInstance
         end
