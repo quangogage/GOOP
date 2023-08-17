@@ -107,7 +107,10 @@ function Goop.Class(data)
                 passedState = {}
                 for i=1,#data.arguments do
                     local key = data.arguments[i]
-                    passedState[key] = arg[i]
+                    if type(key) == "table" then
+                        key = data.arguments[i][1]
+                    end
+                    passedState[key] = args[i]
                     if args[i] == nil then
                         error("GOOP: Missing arguments, expected " .. #data.arguments .. ". Received " .. #args)
                     elseif type(data.arguments[i]) == "table" then ---If a type was specified and needs to be checked for this argument.
