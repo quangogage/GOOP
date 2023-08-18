@@ -73,6 +73,19 @@ function checkParameters(params, requiredParams)
     end
 end
 
+---Check if the class being instantiated is a sub-class (inherits from another class).
+function isSubClass(...)
+    local args = {...}
+    for i=1,#args do
+        local arg = args[i]
+        if type(arg) == "table" then
+            if arg._isSubClass then
+                return true
+            end
+        end
+    end
+    return false
+end
 
 ---Define a new class
 ---@param data {static?: table, dynamic?: table, extends?: table, parameters: table[]}
@@ -86,9 +99,6 @@ function Goop.Class(data)
     local newClassDefinition = {}
     util.table.copy(newClassDefinition, state.static)
     util.table.copy(newClassDefinition, state.dynamic)
-
-    ---Set required parameters
-    newClassDefinition.requiredParameters = data.parameters or {}
 
     ---Metatable
     local mt = {
@@ -136,7 +146,9 @@ function Goop.Class(data)
             local newInstance
             if data.extends then
                 ---Create a new instance of the parent class
-                newInstance = data.extends(...)
+                local args = {...}
+                table.insert(args, {_isSubClass = true})
+                newInstance = data.extends(unpack(args))
                 util.table.deepCopy(newInstance,state.dynamic)
                 util.table.copy(newInstance,state.static)
             else
@@ -148,7 +160,7 @@ function Goop.Class(data)
             end
 
             setmetatable(newInstance, {__index = newClassDefinition})
-            if newInstance.init then
+            if newInstance.init and not isSubClass(...) then
                 newInstance:init(...)
             end
             return newInstance
